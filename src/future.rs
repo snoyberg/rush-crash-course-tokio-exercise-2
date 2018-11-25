@@ -22,6 +22,8 @@ impl Future for IntervalFuture {
     fn poll(&mut self) -> Result<Async<Self::Item>, Self::Error> {
         let curr = self.interval.get_counter();
         if curr == self.last {
+            let task = futures::task::current();
+            self.interval.set_task(task);
             Ok(Async::NotReady)
         } else {
             self.last = curr;
